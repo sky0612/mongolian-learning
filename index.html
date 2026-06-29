@@ -1,23 +1,26 @@
-<!DOCTYPE html><html><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.json">
-<title>몽골어 배우기</title>
-<style>
-body{font-family:Arial;background:#f5f7fb;padding:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
-.card,.item{background:white;border-radius:18px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-button,input{padding:10px;border-radius:10px;border:1px solid #ccc}
-</style></head><body>
-<h1>몽골어 배우기 최종버전</h1>
-<input id="q" placeholder="검색..." oninput="show(cur)">
-<div class="grid" id="menu"></div><div id="content"></div>
+<!DOCTYPE html>
+<html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>몽골어 배우기</title></head>
+<body style='font-family:Arial;padding:20px'>
+<h1>몽골어 배우기</h1>
+<select id='cat'></select>
+<input id='q' placeholder='검색'>
+<div id='list'></div>
 <script>
-const db={"일반 단어": [["Ус", "우스", "물"], ["Хоол", "호올", "음식"], ["Гэр", "게르", "집"], ["Машин", "마신", "자동차"], ["Найз", "나이즈", "친구"], ["Сургууль", "수르굴", "학교"], ["Ажил", "아질", "일"], ["Ном", "놈", "책"], ["Аав", "아브", "아버지"], ["Ээж", "에지", "어머니"], ["Талх", "탈흐", "빵"], ["Сүү", "수", "우유"]], "일상 회화": [["Сайн байна уу?", "사인 바이노 우", "안녕하세요"], ["Баярлалаа", "바야를랄라", "감사합니다"], ["Уучлаарай", "우칠라라이", "죄송합니다"], ["Таны нэр хэн бэ?", "타니 네르 헨 베", "이름이 무엇인가요?"], ["Та хаанаас ирсэн бэ?", "타 하나스 이르센 베", "어디서 오셨나요?"]], "교회·성경": [["Бурхан", "부르항", "하나님"], ["Есүс", "예수스", "예수님"], ["Залбирал", "잘비랄", "기도"], ["Сүм", "숨", "교회"], ["Хамтдаа залбирцгаая.", "함트다 잘비르츠가야", "함께 기도합시다."]]};
-let cur="";
-Object.keys(db).forEach(k=>menu.innerHTML+=`<div class='card' onclick="show('${k}')">${k}</div>`);
-function speak(t){let u=new SpeechSynthesisUtterance(t);u.lang='mn-MN';speechSynthesis.speak(u);}
-function show(c){cur=c||cur;if(!cur)return;let s=q.value.toLowerCase();let h=`<h2>${cur}</h2>`;
-db[cur].filter(x=>x.join(' ').toLowerCase().includes(s)).forEach(v=>h+=`<div class='item'><h3>${v[0]}</h3><div>${v[1]}</div><b>${v[2]}</b><br><button onclick="speak('${v[0]}')">🔊 발음</button></div>`);
-content.innerHTML=h;}
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+let DB={};
+fetch('data.json').then(r=>r.json()).then(d=>{
+DB=d;
+cat.innerHTML=Object.keys(DB).map(x=>`<option>${x}</option>`).join('');
+render();
+});
+function render(){
+const c=cat.value||Object.keys(DB)[0];
+const q=(document.getElementById('q').value||'').toLowerCase();
+list.innerHTML=(DB[c]||[])
+.filter(v=>JSON.stringify(v).toLowerCase().includes(q))
+.map(v=>`<div style="border:1px solid #ddd;padding:12px;margin:10px;border-radius:12px">
+<h3>${v.mongolian}</h3><div>${v.pronunciation}</div><b>${v.korean}</b></div>`).join('');
+}
+cat.onchange=render;
+q.oninput=render;
 </script></body></html>
