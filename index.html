@@ -1,41 +1,33 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="manifest" href="manifest.json">
-<title>몽골어 배우기</title>
 <style>
-body{font-family:Arial;padding:20px;background:#f5f7fb}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.card{background:white;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-table{width:100%;border-collapse:collapse;margin-top:20px}
-td,th{border:1px solid #ddd;padding:8px}
-</style>
-</head>
-<body>
+body{font-family:Arial;padding:20px;background:#f5f5f5}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:white;border-radius:20px;padding:25px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.item{background:white;border-radius:16px;padding:15px;margin:10px 0}
+input{width:100%;padding:12px;border-radius:12px;border:1px solid #ccc}
+button{padding:8px 12px}
+</style></head><body>
 <h1>몽골어 배우기</h1>
-<div class="grid">
-<div class="card">📚 일반 단어</div>
-<div class="card">💬 일상 회화</div>
-<div class="card">⛪ 교회·성경</div>
-<div class="card">🍽 식당</div>
-<div class="card">🏥 병원</div>
-<div class="card">🚕 교통</div>
-</div>
-
-<h2>일상 회화</h2>
-<table>
-<tr><th>몽골어</th><th>발음</th><th>뜻</th></tr>
-<tr><td>Сайн байна уу?</td><td>사인 바이노 우</td><td>안녕하세요</td></tr>
-<tr><td>Баярлалаа</td><td>바야를랄라</td><td>감사합니다</td></tr>
-<tr><td>Уучлаарай</td><td>우칠라라이</td><td>죄송합니다</td></tr>
-</table>
-
+<input id="search" placeholder="검색..." oninput="render(current)">
+<div class="grid" id="menu"></div>
+<div id="content"></div>
 <script>
-if('serviceWorker' in navigator){
- navigator.serviceWorker.register('./sw.js');
+const db={"일반 단어": [["Ус", "우스", "물"], ["Хоол", "호올", "음식"], ["Гэр", "게르", "집"], ["Ном", "놈", "책"], ["Машин", "마신", "자동차"]], "일상 회화": [["Сайн байна уу?", "사인 바이노 우", "안녕하세요"], ["Баярлалаа", "바야를랄라", "감사합니다"], ["Уучлаарай", "우칠라라이", "죄송합니다"]], "교회 회화": [["Бурхан таныг ивээг", "부르항 타늑 이베그", "하나님께서 축복하시길 바랍니다"], ["Хамтдаа залбирцгаая", "함트다 잘비르츠가야", "함께 기도합시다"]]};
+let current="";
+Object.keys(db).forEach(k=>menu.innerHTML+=`<div class='card' onclick="openCat('${k}')">${k}</div>`);
+function speak(t){let u=new SpeechSynthesisUtterance(t);u.lang='mn-MN';speechSynthesis.speak(u);}
+function openCat(c){current=c;render(c);}
+function render(c){
+ if(!c) return;
+ const q=search.value.toLowerCase();
+ let h=`<h2>${c} (${db[c].length}개)</h2>`;
+ db[c].filter(r=>r.join(' ').toLowerCase().includes(q)).forEach(r=>{
+ h+=`<div class='item'><h3>${r[0]}</h3><div>${r[1]}</div><b>${r[2]}</b><br><button onclick="speak('${r[0]}')">🔊 발음</button></div>`;
+ });
+ content.innerHTML=h;
 }
-</script>
-</body>
-</html>
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script></body></html>
