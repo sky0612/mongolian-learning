@@ -1,26 +1,26 @@
-<!DOCTYPE html><html><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>몽골어 배우기</title></head>
-<body style="font-family:Arial;max-width:700px;margin:auto;padding:20px;text-align:center">
-<h1>몽골어 배우기</h1>
-<select id="cat"></select>
-<h2 id="m"></h2><div id="p"></div><h3 id="k"></h3>
-<button onclick="showK()">뜻 보기</button>
-<button onclick="speak()">🔊 음성</button>
-<button onclick="nextW()">다음</button>
-<button onclick="quiz()">📝 퀴즈</button>
-<p id="score"></p>
+
+<!DOCTYPE html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>몽골어 배우기 완전판</title></head>
+<body style="font-family:Arial;text-align:center;padding:20px">
+<h1>몽골어 배우기 완전판</h1>
+<select id='cat'></select>
+<h2 id='w'></h2><div id='p' style='font-size:24px'></div><div id='k' style='font-size:28px;margin:20px'></div>
+<button onclick='showK()'>뜻 보기</button>
+<button onclick='speak()'>🔊 음성</button>
+<button onclick='nextW()'>다음</button>
+<button onclick='quiz()'>📝 퀴즈</button>
+<div id='score'></div>
 <script>
-const db={"성경 단어": [["Бурхан", "부르항", "하나님"], ["Есүс", "예수스", "예수님"], ["Ариун Сүнс", "아리운 순스", "성령"], ["Залбирал", "잘비랄", "기도"], ["Библи", "비블리", "성경"], ["Магтаал", "막탈", "찬양"], ["Мөргөл", "머르걸", "예배"], ["Итгэл", "잇겔", "믿음"], ["Аврал", "아브랄", "구원"]], "교회 회화": [["Сайн байна уу?", "사인 바이노 우", "안녕하세요"], ["Хамтдаа залбирцгаая.", "함트다 잘비르츠가야", "함께 기도합시다."], ["Бурхан таныг ивээг.", "부르항 타늬그 이베그", "하나님께서 축복하시길 바랍니다."]]};
+const db={"성경 단어": [["Бурхан", "부르항", "하나님"], ["Есүс", "예수스", "예수님"], ["Ариун Сүнс", "아리운 순스", "성령"], ["Залбирал", "잘비랄", "기도"], ["Мөргөл", "머르걸", "예배"], ["Магтаал", "막탈", "찬양"], ["Аврал", "아브랄", "구원"], ["Итгэл", "잇겔", "믿음"]], "교회 회화": [["Хамтдаа залбирцгаая.", "함트다 잘비르츠가야", "함께 기도합시다."], ["Бурхан таныг ивээг.", "부르항 타늬그 이베그", "하나님께서 축복하시길 바랍니다."], ["Та сүмд анх удаа ирж байна уу?", "타 숨드 안흐 우다 이르지 바이노 우", "교회에 처음 오셨나요?"]], "일반 단어": [["Ус", "우스", "물"], ["Хоол", "호올", "음식"], ["Гэр", "게르", "집"], ["Машин", "마신", "자동차"], ["Найз", "나이즈", "친구"], ["Сургууль", "수르굴", "학교"], ["Ажил", "아질", "일"], ["Дэлгүүр", "델구르", "가게"]], "일반 회화": [["Сайн байна уу?", "사인 바이노 우", "안녕하세요"], ["Баярлалаа", "바야를랄라", "감사합니다"], ["Уучлаарай", "우칠라라이", "죄송합니다"], ["Таны нэр хэн бэ?", "타니 네르 헨 베", "이름이 무엇인가요?"], ["Би Солонгос хүн.", "비 솔롱고스 훈", "저는 한국 사람입니다."]], "식당 회화": [["Цэс өгнө үү.", "체스 어그너 우", "메뉴판 주세요."], ["Амттай байна.", "암틀태 바이노", "맛있습니다."]], "쇼핑 회화": [["Үнэ хэд вэ?", "우네 헤드 베", "얼마인가요?"], ["Хямдруулж болох уу?", "햠드룰지 볼로흐 우", "깎아주실 수 있나요?"]], "교통 회화": [["Такси дуудна уу.", "탁시 두드나 우", "택시 불러주세요."], ["Буудал хаана байна?", "부달 하나 바이노", "정류장이 어디인가요?"]], "병원 회화": [["Өвдөж байна.", "업더지 바이노", "아픕니다."], ["Эмч хэрэгтэй байна.", "엠치 헤레그테 바이노", "의사가 필요합니다."]], "직장 회화": [["Ажил эхэлье.", "아질 에헬리에", "일을 시작합시다."], ["Завсарлага авъя.", "잡사를라그 아브야", "쉬었다 합시다."]]};
 const cat=document.getElementById('cat');
 Object.keys(db).forEach(v=>cat.innerHTML+=`<option>${v}</option>`);
-let idx=0,c=0,t=0;
-function current(){return db[cat.value||Object.keys(db)[0]]}
-function load(){let w=current()[idx];m.innerText=w[0];p.innerText=w[1];k.innerText="";score.innerText=`점수 ${c}/${t}`;}
-cat.onchange=()=>{idx=0;load();};
-function showK(){k.innerText=current()[idx][2];}
-function nextW(){idx=(idx+1)%current().length;load();}
-function speak(){let u=new SpeechSynthesisUtterance(current()[idx][0]);u.lang='mn-MN';speechSynthesis.speak(u);}
-function quiz(){let q=current()[Math.floor(Math.random()*current().length)];let a=prompt(q[0]+" 뜻은?");if(a==null)return;t++;if(a.trim()==q[2]){c++;alert("정답");}else alert("정답: "+q[2]);score.innerText=`점수 ${c}/${t}`;}
+let i=0,c=0,t=0;
+function arr(){return db[cat.value||Object.keys(db)[0]]}
+function load(){w.innerText=arr()[i][0];p.innerText=arr()[i][1];k.innerText='';score.innerText=`점수 ${c}/${t}`;}
+cat.onchange=()=>{i=0;load();};
+function showK(){k.innerText=arr()[i][2];}
+function nextW(){i=(i+1)%arr().length;load();}
+function speak(){let u=new SpeechSynthesisUtterance(arr()[i][0]);u.lang='mn-MN';speechSynthesis.speak(u);}
+function quiz(){let q=arr()[Math.floor(Math.random()*arr().length)];let a=prompt(q[0]+" 뜻은?");if(a==null)return;t++;if(a.trim()==q[2]){c++;alert("정답!");}else{alert("정답: "+q[2]);}score.innerText=`점수 ${c}/${t}`;}
 load();
 </script></body></html>
