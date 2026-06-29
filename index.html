@@ -1,26 +1,17 @@
-<!DOCTYPE html>
-<html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>몽골어 배우기</title></head>
-<body style='font-family:Arial;padding:20px'>
-<h1>몽골어 배우기</h1>
-<select id='cat'></select>
-<input id='q' placeholder='검색'>
-<div id='list'></div>
-<script>
-let DB={};
-fetch('data.json').then(r=>r.json()).then(d=>{
-DB=d;
-cat.innerHTML=Object.keys(DB).map(x=>`<option>${x}</option>`).join('');
-render();
-});
-function render(){
-const c=cat.value||Object.keys(DB)[0];
-const q=(document.getElementById('q').value||'').toLowerCase();
-list.innerHTML=(DB[c]||[])
-.filter(v=>JSON.stringify(v).toLowerCase().includes(q))
-.map(v=>`<div style="border:1px solid #ddd;padding:12px;margin:10px;border-radius:12px">
-<h3>${v.mongolian}</h3><div>${v.pronunciation}</div><b>${v.korean}</b></div>`).join('');
+async function loadData(){
+    const files=[
+        "data/greetings.json",
+        "data/conversation.json",
+        "data/church.json"
+    ];
+
+    let all=[];
+
+    for(const file of files){
+        const res=await fetch(file);
+        const json=await res.json();
+        all.push(...json);
+    }
+
+    return all;
 }
-cat.onchange=render;
-q.oninput=render;
-</script></body></html>
