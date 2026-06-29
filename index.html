@@ -1,26 +1,41 @@
-<!DOCTYPE html><html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="manifest.json">
 <title>몽골어 배우기</title>
 <style>
-body{font-family:Arial;padding:20px;max-width:900px;margin:auto}
-table{width:100%;border-collapse:collapse}
-td,th{border:1px solid #ccc;padding:8px}
-button,select{padding:8px;margin:5px}
-</style></head><body>
-<h1>몽골어 배우기 (오프라인 완전판)</h1>
-<select id="cat"></select>
-<button onclick="render()">전체 보기</button>
-<table id="tbl"></table>
+body{font-family:Arial;padding:20px;background:#f5f7fb}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card{background:white;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+td,th{border:1px solid #ddd;padding:8px}
+</style>
+</head>
+<body>
+<h1>몽골어 배우기</h1>
+<div class="grid">
+<div class="card">📚 일반 단어</div>
+<div class="card">💬 일상 회화</div>
+<div class="card">⛪ 교회·성경</div>
+<div class="card">🍽 식당</div>
+<div class="card">🏥 병원</div>
+<div class="card">🚕 교통</div>
+</div>
+
+<h2>일상 회화</h2>
+<table>
+<tr><th>몽골어</th><th>발음</th><th>뜻</th></tr>
+<tr><td>Сайн байна уу?</td><td>사인 바이노 우</td><td>안녕하세요</td></tr>
+<tr><td>Баярлалаа</td><td>바야를랄라</td><td>감사합니다</td></tr>
+<tr><td>Уучлаарай</td><td>우칠라라이</td><td>죄송합니다</td></tr>
+</table>
+
 <script>
-const db={"일반 단어": [["Ус", "우스", "물"], ["Хоол", "호올", "음식"], ["Гэр", "게르", "집"], ["Найз", "나이즈", "친구"], ["Машин", "마신", "자동차"], ["Сургууль", "수르굴", "학교"], ["Ажил", "아질", "일"], ["Дэлгүүр", "델구르", "가게"]], "일반 회화": [["Сайн байна уу?", "사인 바이노 우", "안녕하세요"], ["Баярлалаа", "바야를랄라", "감사합니다"], ["Уучлаарай", "우칠라라이", "죄송합니다"], ["Та хаанаас ирсэн бэ?", "타 하나스 이르센 베", "어디서 오셨나요?"], ["Би Солонгос хүн.", "비 솔롱고스 훈", "저는 한국 사람입니다."]], "교회/성경": [["Бурхан", "부르항", "하나님"], ["Есүс", "예수스", "예수님"], ["Залбирал", "잘비랄", "기도"], ["Сүм", "숨", "교회"], ["Магтаал", "막탈", "찬양"], ["Мөргөл", "머르걸", "예배"]], "식당": [["Үнэ хэд вэ?", "우네 헤드 베", "얼마인가요?"], ["Амттай байна.", "암트타이 바이노", "맛있습니다."]], "병원": [["Өвдөж байна.", "업더지 바이노", "아픕니다."], ["Эмч хэрэгтэй байна.", "엠치 헤레그테 바이노", "의사가 필요합니다."]]};
-const cat=document.getElementById('cat');
-Object.keys(db).forEach(v=>cat.innerHTML+=`<option>${v}</option>`);
-function speak(t){let u=new SpeechSynthesisUtterance(t);u.lang='mn-MN';speechSynthesis.speak(u);}
-function render(){
-tbl.innerHTML='<tr><th>몽골어</th><th>발음</th><th>뜻</th><th>음성</th></tr>';
-db[cat.value].forEach(r=>tbl.innerHTML+=`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><button onclick="speak('${r[0]}')">🔊</button></td></tr>`);
+if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('./sw.js');
 }
-cat.onchange=render; render();
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-</script></body></html>
+</script>
+</body>
+</html>
