@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>몽골어 배우기</title></head>
+<body style="font-family:Arial;max-width:700px;margin:auto;padding:20px;text-align:center">
+<h1>몽골어 배우기</h1>
+<select id="cat"></select>
+<h2 id="m"></h2><div id="p"></div><h3 id="k"></h3>
+<button onclick="showK()">뜻 보기</button>
+<button onclick="speak()">🔊 음성</button>
+<button onclick="nextW()">다음</button>
+<button onclick="quiz()">📝 퀴즈</button>
+<p id="score"></p>
+<script>
+const db={"성경 단어": [["Бурхан", "부르항", "하나님"], ["Есүс", "예수스", "예수님"], ["Ариун Сүнс", "아리운 순스", "성령"], ["Залбирал", "잘비랄", "기도"], ["Библи", "비블리", "성경"], ["Магтаал", "막탈", "찬양"], ["Мөргөл", "머르걸", "예배"], ["Итгэл", "잇겔", "믿음"], ["Аврал", "아브랄", "구원"]], "교회 회화": [["Сайн байна уу?", "사인 바이노 우", "안녕하세요"], ["Хамтдаа залбирцгаая.", "함트다 잘비르츠가야", "함께 기도합시다."], ["Бурхан таныг ивээг.", "부르항 타늬그 이베그", "하나님께서 축복하시길 바랍니다."]]};
+const cat=document.getElementById('cat');
+Object.keys(db).forEach(v=>cat.innerHTML+=`<option>${v}</option>`);
+let idx=0,c=0,t=0;
+function current(){return db[cat.value||Object.keys(db)[0]]}
+function load(){let w=current()[idx];m.innerText=w[0];p.innerText=w[1];k.innerText="";score.innerText=`점수 ${c}/${t}`;}
+cat.onchange=()=>{idx=0;load();};
+function showK(){k.innerText=current()[idx][2];}
+function nextW(){idx=(idx+1)%current().length;load();}
+function speak(){let u=new SpeechSynthesisUtterance(current()[idx][0]);u.lang='mn-MN';speechSynthesis.speak(u);}
+function quiz(){let q=current()[Math.floor(Math.random()*current().length)];let a=prompt(q[0]+" 뜻은?");if(a==null)return;t++;if(a.trim()==q[2]){c++;alert("정답");}else alert("정답: "+q[2]);score.innerText=`점수 ${c}/${t}`;}
+load();
+</script></body></html>
